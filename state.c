@@ -60,8 +60,8 @@ void fsm_arrivedAtFloor(int signal_floor){
     
     //set current floor
     currentFloor = signal_floor;
-    elev_button_type_t buttonout;
-    elev_button_type_t buttoninside;
+    elev_button_type_t buttonout = 0;
+    elev_button_type_t buttoninside= 0;
     
     switch (state) {
         case running:
