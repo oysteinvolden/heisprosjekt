@@ -32,6 +32,33 @@ int main() {
         
         for(int i = 0; i< 3; i++){
             elev_button_type_t button = i;
+            switch (i) {
+                case 0:
+                    for(int floor= 0; floor< 3; floor++){
+                        if(elev_get_button_signal(floor, button) == 1){
+                            //fsm_buttonIsPushed(floor,button);
+                            elev_set_button_lamp(button,floor,1);
+                        }
+                    }
+                    break;
+                case 1:
+                        for(int floor= 1; floor< 4; floor++){
+                            if(elev_get_button_signal(floor, button) == 1){
+                                //fsm_buttonIsPushed(floor,button);
+                                elev_set_button_lamp(button,floor,1);
+                            }
+                        }
+                case 2:
+                    for(int floor= 0; floor< 4; floor++){
+                        if(elev_get_button_signal(floor, button) == 1){
+                            //fsm_buttonIsPushed(floor,button);
+                            elev_set_button_lamp(button,floor,1);
+                        }
+                    }
+
+                default:
+                    break;
+            }
             for(int floor= 0; floor< 4; floor++){
                 
                 if(elev_get_button_signal(floor, button) == 1){
