@@ -60,25 +60,25 @@ void fsm_arrivedAtFloor(int signal_floor){
     
     //set current floor
     currentFloor = signal_floor;
-    
-    
+    elev_button_type_t buttonout;
+    elev_button_type_t buttoninside;
     
     switch (state) {
         case running:
             //check if the order is in right direction
-            elev_button_type_t button1 = 0;
+
             if(queue_floorInQueue(currentFloor,direction) == 1){
                 
                 if (direction == 1){
-                    elev_button_type_t button1 = 0;
+                    elev_button_type_t buttonout = 0;
                 }
                 else {
-                    elev_button_type_t button1 = 1;
+                    elev_button_type_t buttonout = 1;
                 }
                 elev_button_type_t buttoninside = 2;
                 
                 queue_removeOrder(currentFloor,direction);
-                elev_set_button_lamp(button1,signal_floor,0);
+                elev_set_button_lamp(buttonout,signal_floor,0);
                 elev_set_button_lamp(buttoninside,signal_floor,0);
                 fsm_unloading();
                 state = unloading;
