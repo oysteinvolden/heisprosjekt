@@ -17,7 +17,7 @@ void fsm_enableDirection();//is this useful?
 void fsm_arrivedAtFloor();
 void fsm_stopButtonPressed();
 void fsm_buttonIsPushed();
-void fsm_chooseMotorDirection();
+int fsm_chooseMotorDirection();
 void fsm_turnOfButtonLights();
 
 

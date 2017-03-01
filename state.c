@@ -47,39 +47,8 @@ void fsm_timeOut(){
     
 }
 
-//local function
-void fsm_chooseMotorDirection(){
-    switch(state){
-        case idle:
-            if(targetFloor > currentFloor){
-                elev_set_motor_direction(1);
-            }
-            else if(targetFloor < currentFloor){
-                elev_set_motor_direction(-1);
-            }
-            else if(targetFloor == currentFloor){
-                break;
-            }
-            
-        case unloading:
-            //cannot check button is pushed in unloading
-            if(targetFloor > currentFloor){
-                elev_set_motor_direction(1);
-                state = running;
-            }
-            else if(targetFloor < currentFloor){
-                elev_set_motor_direction(-1);
-                state = running;
-            }
-            else if(targetFloor == currentFloor){
-                break;
-            }
-            
-            //more states that can set motor direction?
-        default: break;
-            
-    }
-}
+
+
 
 void fsm_arrivedAtFloor(int signal_floor){
     
@@ -150,6 +119,8 @@ void fsm_stopButtonPressed(){
     }
 }
 
+
+//local function
 int fsm_chooseMotorDirection(){
     if(targetFloor > currentFloor){
         return 1;
@@ -158,9 +129,9 @@ int fsm_chooseMotorDirection(){
         return -1;
     }
     else if(targetFloor == currentFloor){
-        
+        return 0;
     }
-    
+    return 0;
     
 }
 
@@ -178,8 +149,10 @@ void fsm_buttonIsPushed(int floor,int direction,buttonType button){
             break;
             
         case running:
-            
+            queue_addToQueue(floor,button);
             break;
+            
+        case
             
         default:
             break;
