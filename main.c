@@ -1,4 +1,6 @@
 #include "elev.h"
+#include "timer.h"
+#include "state.h"
 #include <stdio.h>
 
 
