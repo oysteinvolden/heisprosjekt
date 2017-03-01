@@ -16,9 +16,9 @@ typedef enum {noState,idle,running,unloading,emergency_stop_in_floor,emergency_s
 //defining variables
 static int currentFloor;
 static int targetFloor;
-static int direction;
 static fsm_state state = noState;
-static buttonType button;
+static int direction;
+
 
 
 void fsm_initialize(void){
@@ -60,6 +60,8 @@ void fsm_arrivedAtFloor(int signal_floor){
     //set current floor
     currentFloor = signal_floor;
     
+    
+    
     switch (state) {
         case running:
             //check if the order is in right direction
@@ -86,9 +88,9 @@ void fsm_arrivedAtFloor(int signal_floor){
 //local function
 void fsm_turnOfButtonLights(){
     for(int i = 0; i< 3; i++){
-        buttonType button = i;
+        elev_button_type_t button = i;
         for(int floor= 0; floor< 4; floor++){
-            elev_get_button_lamp(button,floor,0);//clear light bits
+            elev_set_button_lamp(button,floor,0);//clear light bits
         }
     }
     
@@ -106,7 +108,7 @@ void fsm_stopButtonPressed(){
             break;
             
         case unloading:
-            elev_set_motor_direction(DIRN_UP);
+            elev_set_motor_direction(1);
             elev_set_door_open_lamp(1);
             queue_initialize();//delete all orders
             fsm_turnOfButtonLights();
@@ -155,7 +157,7 @@ void fsm_chooseMotorDirection(){
     
 }
 
-void fsm_buttonIsPushed(int floor,buttonType button){
+void fsm_buttonIsPushed(int floor,elev_button_type_t button){
     //check if the button is valid
     assert(button >= 0 && button <= 2);
     
