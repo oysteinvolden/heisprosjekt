@@ -31,7 +31,7 @@ int main() {
         //Sjekker om noen av bestillingsknappene er trykket inn.
         
         for(int i = 0; i< 3; i++){
-            buttonType button = i;
+            elev_button_type_t button = i;
             for(int floor= 0; floor< 4; floor++){
                 
                 if(elev_get_button_signal(button, floor) == 1){

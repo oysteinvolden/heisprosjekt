@@ -17,16 +17,16 @@
 static time_t start;
 
 
-void timerStart(){
+void timer_Start(){
     time (&start);
 }
 
-void timerReset(){
+void timer_Reset(){
     start = -1;
     
 }
 
-int getTime(){
+int timer_isTimeOut(){
     //if (start != -1){
         time_t end;
         time (&end);
