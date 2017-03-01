@@ -119,6 +119,23 @@ void fsm_stopButtonPressed(){
     }
 }
 
+void fsm_stopButtonUnpressed(){
+    switch (state) {
+        case emergency_stop_in_floor:
+            
+            state = unloading;
+            break;
+            
+        case emergency_stop_between_floor:
+            
+            state = idle;
+            break;
+            
+        default:
+            break;
+    }
+}
+
 
 //local function
 int fsm_chooseMotorDirection(){
@@ -141,10 +158,10 @@ void fsm_buttonIsPushed(int floor,int direction,buttonType button){
     
     switch (state) {
         case idle:
-            int nextOrderFloor;
             queue_addToQueue(floor,button);
+            int nextOrderFloor;
             nextOrderFloor = queue_getNextOrder(floor, direction);
-            fsm_chooseMotorDirection();
+            elev_set_motor_direction(fsm_chooseMotorDirection());
             state = running;
             break;
             
@@ -152,7 +169,9 @@ void fsm_buttonIsPushed(int floor,int direction,buttonType button){
             queue_addToQueue(floor,button);
             break;
             
-        case
+        case unloading:
+            queue_addToQueue(floor,button);
+            
             
         default:
             break;
