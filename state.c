@@ -17,6 +17,7 @@ buttonType;
 //defining variables
 static int currentFloor;
 static int targetFloor;
+static int direction;
 static fsm_state state = noState;
 static buttonType button;
 
@@ -33,12 +34,12 @@ void fsm_timeOut(){
     switch(state){
         case unloading:
             //no order in queue
-            if(queue_selectNextOrder == -1){
+            if(queue_selectNextOrder == 0){
                 state = idle;
                 //more things happening here?
             }
             //order in queue
-            else if(queue_selectNextOrder >= 0 && queue_selectNextOrder <= 11){
+            else if(queue_selectNextOrder >= 1 && queue_selectNextOrder <= 4){
                 state = running;
                 //more things happening here?
             }
@@ -60,9 +61,7 @@ void fsm_arrivedAtFloor(int signal_floor){
             //check if the order is in right direction
             if(queue_floorInQueue(currentFloor,button) == 1){
                 queue_removeOrder();
-                elev_set_motor_direction(0);
-                elev_set_door_open_lamp(0);
-                elev_set_button_lamp(1);
+                fsm_unloading();
                 state = unloading;
                 break;
             }
@@ -78,19 +77,15 @@ void fsm_arrivedAtFloor(int signal_floor){
     
 }
 
-/*
- //local function - not sure if necessary
- int fsm_floorSensorActive(){
- //check if some floor sensor are active
- if(elev_get_floor_sensor_signal() == -1){
- return 0;
- break;
- }
- return 1;
- }*/
 
 //local function
 void fsm_turnOfButtonLights(){
+    for(int i = 0; i< 3; i++){
+        buttonType button = i;
+        for(int floor= 0; floor< 4; floor++){
+            elev_get_button_lamp(button,floor,0);//clear light bits
+        }
+    }
     
 }
 
@@ -119,10 +114,17 @@ void fsm_stopButtonPressed(){
     }
 }
 
+void fsm_unloading(){
+    elev_set_motor_direction(0);
+    elev_set_door_open_lamp(0);
+    elev_set_button_lamp(1);
+    timerStart();
+}
+
 void fsm_stopButtonUnpressed(){
     switch (state) {
         case emergency_stop_in_floor:
-            
+            fsm_unloading();
             state = unloading;
             break;
             
@@ -138,21 +140,17 @@ void fsm_stopButtonUnpressed(){
 
 
 //local function
-int fsm_chooseMotorDirection(){
+void fsm_chooseMotorDirection(){
     if(targetFloor > currentFloor){
-        return 1;
+        direction = 1;
     }
     else if(targetFloor < currentFloor){
-        return -1;
+        direction = -1;
     }
-    else if(targetFloor == currentFloor){
-        return 0;
-    }
-    return 0;
     
 }
 
-void fsm_buttonIsPushed(int floor,int direction,buttonType button){
+void fsm_buttonIsPushed(int floor,buttonType button){
     //check if the button is valid
     assert(button >= 0 && button <= 2);
     
@@ -160,8 +158,8 @@ void fsm_buttonIsPushed(int floor,int direction,buttonType button){
         case idle:
             queue_addToQueue(floor,button);
             int nextOrderFloor;
-            nextOrderFloor = queue_getNextOrder(floor, direction);
-            elev_set_motor_direction(fsm_chooseMotorDirection());
+            nextOrderFloor = queue_getNextOrder(floor,direction);
+            elev_set_motor_direction(direction);
             state = running;
             break;
             
