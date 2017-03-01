@@ -10,13 +10,14 @@
 #define queue_h
 
 #include <stdio.h>
+#include "elev.h"
 
 #endif /* queue_h */
 
 void queue_initialize();
-void queue_addToQueue(int,int);
+void queue_addToQueue(int,elev_button_type_t);
 void queue_removeOrder(int,int);
-int queue_floorInQueue(int);
+int queue_floorInQueue(int,int);
 int queue_getNextOrder(int,int);
 int queue_selectNextOrder(int,int);
 

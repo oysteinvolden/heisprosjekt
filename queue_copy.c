@@ -20,7 +20,7 @@ void queue_initialize(){
     }
 }
 
-void queue_addToQueue(int floor, ButtonType button){
+void queue_addToQueue(int floor, elev_button_type_t button){
     assert(floor >= 0 && floor <= 3);
     int counter = 1;
     
@@ -108,12 +108,12 @@ int queue_floorInQueue(int floor, int direction){
 }
 
 
-int queue_getNextOrder(int position, int motor_direction){
+int queue_getNextOrder(int position, int direction){
     if(queueEmpty() == 0){
         return -1;
     }
     else{
-        return queue_selectNextOrder(position,motor_direction);
+        return queue_selectNextOrder(position,direction);
     }
     
     return -1;
