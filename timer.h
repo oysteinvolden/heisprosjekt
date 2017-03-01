@@ -1,5 +1,5 @@
 
-void timer_Start();
-void timer_Reset();
+void timer_start();
+void timer_reset();
 int timer_isTimeOut();
 

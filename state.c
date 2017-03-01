@@ -39,9 +39,9 @@ void fsm_timeOut(){
                 //more things happening here?
             }
             //order in queue
-            else if(queue_selectNextOrder() >= 1 && queue_selectNextOrder() <= 3){
+            else if(queue_selectNextOrder(currentFloor,direction) >= 1 && queue_selectNextOrder(currentFloor,direction) <= 3){
                 elev_set_door_open_lamp(0);
-                targetFloor = queue_getNextOrder(floor,direction);
+                targetFloor = queue_getNextOrder(currentFloor,direction);
                 fsm_chooseMotorDirection();
                 elev_set_motor_direction(direction);
                 state = running;
@@ -125,7 +125,7 @@ void fsm_unloading(){
     elev_set_motor_direction(0);
     elev_set_door_open_lamp(1);
     elev_set_button_lamp(1);
-    timerStart();
+    timer_start();
 }
 
 void fsm_stopButtonUnpressed(){

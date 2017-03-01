@@ -17,11 +17,11 @@
 static time_t start;
 
 
-void timer_Start(){
+void timer_start(){
     time (&start);
 }
 
-void timer_Reset(){
+void timer_reset(){
     start = -1;
     
 }
