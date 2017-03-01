@@ -11,8 +11,7 @@
 //defining states
 typedef enum {noState,idle,running,unloading,emergency_stop_in_floor,emergency_stop_between_floor} fsm_state;
 
-typedef enum {up,down,out}
-buttonType;
+
 
 //defining variables
 static int currentFloor;

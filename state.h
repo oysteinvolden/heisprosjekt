@@ -14,6 +14,9 @@
 #include "elev.h"
 #include "timer.h"
 
+typedef enum {up,down,out}
+buttonType;
+
 void fsm_initialize();
 void fsm_timeOut();
 void fsm_enableDirection();//is this useful?
