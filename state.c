@@ -7,6 +7,7 @@
 //
 
 #include "state.h"
+#include "assert.h"
 
 //defining states
 typedef enum {noState,idle,running,unloading,emergency_stop_in_floor,emergency_stop_between_floor} fsm_state;
@@ -33,7 +34,7 @@ void fsm_timeOut(){
     switch(state){
         case unloading:
             //no order in queue
-            if(queue_selectNextOrder() == 0){
+            if(queue_selectNextOrder(currentFloor,direction) == 0){
                 elev_set_door_open_lamp(0);
                 state = idle;
                 //more things happening here?
@@ -65,8 +66,19 @@ void fsm_arrivedAtFloor(int signal_floor){
     switch (state) {
         case running:
             //check if the order is in right direction
+            
             if(queue_floorInQueue(currentFloor,direction) == 1){
+                if (direction == 1){
+                    elev_button_type_t button1 = 0;
+                }
+                else {
+                    elev_button_type_t button1 = 1;
+                }
+                elev_button_type_t buttoninside = 2;
+                
                 queue_removeOrder(currentFloor,direction);
+                elev_set_button_lamp(button1,signal_floor,0);
+                elev_set_button_lamp(buttoninside,signal_floor,0);
                 fsm_unloading();
                 state = unloading;
                 break;
@@ -124,7 +136,6 @@ void fsm_stopButtonPressed(){
 void fsm_unloading(){
     elev_set_motor_direction(0);
     elev_set_door_open_lamp(1);
-    elev_set_button_lamp(1);
     timer_start();
 }
 
@@ -159,7 +170,7 @@ void fsm_chooseMotorDirection(){
 
 void fsm_buttonIsPushed(int floor,elev_button_type_t button){
     //check if the button is valid
-    assert(button >= 0 && button <= 2);
+    //assert(button >= 0 && button <= 2);
     
     switch (state) {
         case idle:
