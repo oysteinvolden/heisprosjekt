@@ -17,11 +17,11 @@
 void fsm_initialize();
 void fsm_timeOut();
 void fsm_enableDirection();//is this useful?
-void fsm_arrivedAtFloor();
+void fsm_arrivedAtFloor(int);
 void fsm_stopButtonPressed();
 void fsm_stopButtonUnpressed();
-void fsm_buttonIsPushed();
-int fsm_chooseMotorDirection();
+void fsm_buttonIsPushed(int,buttonType);
+void fsm_chooseMotorDirection();
 void fsm_turnOfButtonLights();
 
 

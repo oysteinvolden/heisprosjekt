@@ -34,12 +34,17 @@ void fsm_timeOut(){
     switch(state){
         case unloading:
             //no order in queue
-            if(queue_selectNextOrder == 0){
+            if(queue_selectNextOrder() == 0){
+                elev_set_door_open_lamp(0);
                 state = idle;
                 //more things happening here?
             }
             //order in queue
-            else if(queue_selectNextOrder >= 1 && queue_selectNextOrder <= 4){
+            else if(queue_selectNextOrder() >= 1 && queue_selectNextOrder() <= 3){
+                elev_set_door_open_lamp(0);
+                targetFloor = queue_getNextOrder(floor,direction);
+                fsm_chooseMotorDirection();
+                elev_set_motor_direction(direction);
                 state = running;
                 //more things happening here?
             }
@@ -59,14 +64,15 @@ void fsm_arrivedAtFloor(int signal_floor){
     switch (state) {
         case running:
             //check if the order is in right direction
-            if(queue_floorInQueue(currentFloor,button) == 1){
-                queue_removeOrder();
+            if(queue_floorInQueue(currentFloor,direction) == 1){
+                queue_removeOrder(currentFloor,direction);
                 fsm_unloading();
                 state = unloading;
                 break;
             }
-            else if(queue_floorInQueue(currentFloor,button) == 0){
+            else if(queue_floorInQueue(currentFloor,direction) == 0){
                 state = running; //stay in running mode until you reach target floor
+                break;
             }
             
             //more states that can use this logic? no?
@@ -116,7 +122,7 @@ void fsm_stopButtonPressed(){
 
 void fsm_unloading(){
     elev_set_motor_direction(0);
-    elev_set_door_open_lamp(0);
+    elev_set_door_open_lamp(1);
     elev_set_button_lamp(1);
     timerStart();
 }
@@ -157,8 +163,9 @@ void fsm_buttonIsPushed(int floor,buttonType button){
     switch (state) {
         case idle:
             queue_addToQueue(floor,button);
-            int nextOrderFloor;
-            nextOrderFloor = queue_getNextOrder(floor,direction);
+            
+            targetFloor = queue_getNextOrder(floor,direction);
+            fsm_chooseMotorDirection();
             elev_set_motor_direction(direction);
             state = running;
             break;

@@ -20,8 +20,8 @@ void queue_initialize(){
     }
 }
 
-void queue_addToQueue(int floor, int button){
-    assert(floor >= 0 && floor <= 11);
+void queue_addToQueue(int floor, ButtonType button){
+    assert(floor >= 0 && floor <= 3);
     int counter = 1;
     
     
@@ -62,41 +62,22 @@ void queue_addToQueue(int floor, int button){
     }
 }
 
-void queue_removeOrder(int floor, int button){
-    assert(floor >= 0 && floor <= 11);
+void queue_removeOrder(int floor, int direction){
+    assert(floor >= 0 && floor <= 3);
     int counter = 1;
     
-    
-    switch (button) {
-        case 0:
-            
-            for (int i =0; i<4; i++){
-                if (counter == floor){
-                    queue[i][0]= 0;
-                    break;
-                }
-                counter++;
-            }
-            break;
+    queue[floor][2]= 0;
+    switch (direction) {
         case 1:
-            for (int i =0; i<4; i++){
-                if (counter == floor){
-                    queue[i][1]= 0;
-                    break;
-                }
-                counter++;
-            }
+            
+            queue[floor][0]= 0;
             break;
             
-        case 2:
-            for (int i =0; i<4; i++){
-                if (counter == floor){
-                    queue[i][2]= 0;
-                    break;
-                }
-                counter++;
-            }
+        case -1:
+            queue[floor][1]= 0;
             break;
+            
+        
             
             
         default:
@@ -106,9 +87,24 @@ void queue_removeOrder(int floor, int button){
 
 
 
-int queue_floorInQueue(int floor, int button){
+int queue_floorInQueue(int floor, int direction){
     assert(floor >= 0 && floor <= (Nfloor-1));
-    return(queue[button][floor]);
+    if(queue[floor][2] == 1){ //check if inside orders
+        return 1;
+    }
+    switch (direction) {
+        case 1:
+            if(queue[floor][0] == 1){
+                return 1;
+            }
+            break;
+        
+        case -1:
+            if(queue[floor][1] == 1){
+                return 1;
+        default:
+    return 0;
+                
 }
 
 
@@ -135,12 +131,12 @@ int queueEmpty(){
     return 0;
 }
 
-int queue_selectNextOrder(int thefloorwereatnow,int direction){
+int queue_selectNextOrder(int currentFloor,int direction){
     
-    if (thefloorwereatnow == 4) {
+    if (currentFloor == 4) {
         direction = -1;
     }
-    else if(thefloorwereatnow == 1){
+    else if(currentFloor == 1){
         direction = 1;
     }
     
@@ -148,21 +144,21 @@ int queue_selectNextOrder(int thefloorwereatnow,int direction){
         case 1:
             
             // is there someone inside wanting up?
-            for(int i =3; i > (thefloorwereatnow-1); i--){
+            for(int i =3; i > (currentFloor-1); i--){
                 if (queue[i][2] == 1){
                     return (i+1);
                 }
             }
             
             //is there someone over us wanting down?
-            for(int i =3; i > (thefloorwereatnow-1); i--){
+            for(int i =3; i > (currentFloor-1); i--){
                 if (queue[i][1] == 1){
                     return (i+1);
                 }
             }
             //is there someone over us wanting up?
             
-            for(int i =3; i > (thefloorwereatnow-1); i--){
+            for(int i =3; i > (currentFloor-1); i--){
                 if (queue[i][0] == 1){
                     return (i+1);
                 }
@@ -175,14 +171,14 @@ int queue_selectNextOrder(int thefloorwereatnow,int direction){
             
         case -1:
             // is there someone inside wanting down?
-            for(int i =0; i < (thefloorwereatnow-1); i++){
+            for(int i =0; i < (currentFloor-1); i++){
                 if (queue[i][2] == 1){
                     return (i+1);
                 }
             }
             
             //is there someone under us wanting up?
-            for(int i =0; i < (thefloorwereatnow-1); i++){
+            for(int i =0; i < (currentFloor-1); i++){
                 if (queue[i][0] == 1){
                     return (i+1);
                 }
@@ -190,7 +186,7 @@ int queue_selectNextOrder(int thefloorwereatnow,int direction){
             
             
             //is there someone over us wanting down?
-            for(int i =0; i < (thefloorwereatnow-1); i++){
+            for(int i =0; i < (currentFloor-1); i++){
                 if (queue[i][1] == 1){
                     return (i+1);
                 }

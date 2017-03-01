@@ -28,19 +28,21 @@ int main() {
         
         */
         
+        //Sjekker om noen av bestillingsknappene er trykket inn.
+        
         for(int i = 0; i< 3; i++){
-            elev_button_type_t button = i;
+            buttonType button = i;
             for(int floor= 0; floor< 4; floor++){
                 
                 if(elev_get_button_signal(button, floor) == 1){
-                    fsm_buttonIsPushed(button,floor);
-                    elev_set_button_lamp(button,floor);
+                    fsm_buttonIsPushed(floor,button);
+                    elev_set_button_lamp(button,floor,1); // obs button er ikke av elev button type t
                 }
             }
         }
         
         if (elev_get_floor_sensor_signal() != -1){
-            fsm_arrivedatfloor(elev_get_floor_sensor_signal());
+            fsm_arrivedAtFloor(elev_get_floor_sensor_signal());
         }
         
         if(timer_isTimeOut() == 1){
