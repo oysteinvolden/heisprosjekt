@@ -6,7 +6,7 @@
 //  Copyright © 2017 Apple Computers. All rights reserved.
 //
 
-#include "queue.h"
+#include "queue_copy.h"
 #include <assert.h>
 
 static int queue[4][3];
