@@ -20,6 +20,7 @@ void queue_removeOrder(int,int);
 int queue_floorInQueue(int,int);
 int queue_getNextOrder(int,int);
 int queue_selectNextOrder(int,int);
+int queueEmpty();
 
 
 void printQueue();

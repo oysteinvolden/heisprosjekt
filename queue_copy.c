@@ -107,6 +107,7 @@ int queue_floorInQueue(int floor, int direction){
                 
 }
 }
+    return 0;
 }
 
 int queue_getNextOrder(int currentFloor, int direction){
