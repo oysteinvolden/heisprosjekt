@@ -34,7 +34,7 @@ int main() {
             elev_button_type_t button = i;
             for(int floor= 0; floor< 4; floor++){
                 
-                if(elev_get_button_signal(button, floor) == 1){
+                if(elev_get_button_signal(floor, button) == 1){
                     fsm_buttonIsPushed(floor,button);
                     elev_set_button_lamp(button,floor,1); // obs button er ikke av elev button type t
                 }
