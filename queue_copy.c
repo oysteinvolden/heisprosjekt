@@ -9,8 +9,6 @@
 #include "queue.h"
 #include <assert.h>
 
-
-
 static int queue[4][3];
 static int Nfloor = 4;
 
@@ -25,14 +23,14 @@ void queue_initialize(){
 void queue_addToQueue(int floor, int button){
     assert(floor >= 0 && floor <= 11);
     int counter = 1;
-
+    
     
     switch (button) {
         case 0:
             
             for (int i =0; i<4; i++){
                 if (counter == floor){
-                    queue[i][0] = 1;
+                    queue[i][0]= 1;
                     break;
                 }
                 counter++;
@@ -41,7 +39,7 @@ void queue_addToQueue(int floor, int button){
         case 1:
             for (int i =0; i<4; i++){
                 if (counter == floor){
-                    queue[i][1] = 1;
+                    queue[i][1]= 1;
                     break;
                 }
                 counter++;
@@ -51,7 +49,7 @@ void queue_addToQueue(int floor, int button){
         case 2:
             for (int i =0; i<4; i++){
                 if (counter == floor){
-                    queue[i][2] = 1;
+                    queue[i][2]= 1;
                     break;
                 }
                 counter++;
@@ -74,7 +72,7 @@ void queue_removeOrder(int floor, int button){
             
             for (int i =0; i<4; i++){
                 if (counter == floor){
-                    queue[i][0] = 0;
+                    queue[i][0]= 0;
                     break;
                 }
                 counter++;
@@ -83,7 +81,7 @@ void queue_removeOrder(int floor, int button){
         case 1:
             for (int i =0; i<4; i++){
                 if (counter == floor){
-                    queue[i][1] = 0;
+                    queue[i][1]= 0;
                     break;
                 }
                 counter++;
@@ -93,7 +91,7 @@ void queue_removeOrder(int floor, int button){
         case 2:
             for (int i =0; i<4; i++){
                 if (counter == floor){
-                    queue[i][2] = 0;
+                    queue[i][2]= 0;
                     break;
                 }
                 counter++;
@@ -109,17 +107,17 @@ void queue_removeOrder(int floor, int button){
 
 
 int queue_floorInQueue(int floor, int button){
-    assert(floor >= 0 && floor <= (Nfloor-1);
+    assert(floor >= 0 && floor <= (Nfloor-1));
     return(queue[button][floor]);
 }
 
 
-int queue_getNextOrder(int position, int direction){
+int queue_getNextOrder(int position, int motor_direction){
     if(queueEmpty() == 0){
         return -1;
     }
     else{
-        return queue_selectNextOrder(position,direction);
+        return queue_selectNextOrder(position,motor_direction);
     }
     
     return -1;
@@ -137,7 +135,14 @@ int queueEmpty(){
     return 0;
 }
 
-int queue_selectNextOrder(int thefloorwereatnow,int buttondirn){
+int queue_selectNextOrder(int thefloorwereatnow,int direction){
+    
+    if (thefloorwereatnow == 4) {
+        direction = -1;
+    }
+    else if(thefloorwereatnow == 1){
+        direction = 1;
+    }
     
     switch (direction) {
         case 1:
@@ -156,14 +161,14 @@ int queue_selectNextOrder(int thefloorwereatnow,int buttondirn){
                 }
             }
             //is there someone over us wanting up?
-
+            
             for(int i =3; i > (thefloorwereatnow-1); i--){
                 if (queue[i][0] == 1){
                     return (i+1);
                 }
             }
             
-
+            
             //OBS OBS denne rekkefølgen må dobbeltsjekkes men tror den stemmer
             
             break;
@@ -182,7 +187,7 @@ int queue_selectNextOrder(int thefloorwereatnow,int buttondirn){
                     return (i+1);
                 }
             }
-
+            
             
             //is there someone over us wanting down?
             for(int i =0; i < (thefloorwereatnow-1); i++){
@@ -213,4 +218,3 @@ void printQueue(){
         }
     }
 }
-
