@@ -10,6 +10,9 @@
 #define state_h
 
 #include <stdio.h>
+#include "queue_copy.h"
+#include "elev.h"
+#include "timer.h"
 
 void fsm_initialize();
 void fsm_timeOut();
