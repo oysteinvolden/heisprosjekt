@@ -21,13 +21,33 @@ int main() {
         
         for(int i = 0; i< 3; i++){
             if (i == 0){
+                for (int floor = 0; floor < 3; floor ++){
                 elev_button_type_t button = 0;
                 if(elev_get_button_signal(floor, button) == 1){
                     //fsm_buttonIsPushed(floor,button);
                     elev_set_button_lamp(button,floor,1);
                 }
-
+                }
             }
+            if (i == 1){
+                for (int floor = 1; floor < 4; floor ++){
+                    elev_button_type_t button = 1;
+                    if(elev_get_button_signal(floor, button) == 1){
+                        //fsm_buttonIsPushed(floor,button);
+                        elev_set_button_lamp(button,floor,1);
+                    }
+                }
+            }
+            if (i == 2){
+                for (int floor = 0; floor < 4; floor ++){
+                    elev_button_type_t button = 2;
+                    if(elev_get_button_signal(floor, button) == 1){
+                        //fsm_buttonIsPushed(floor,button);
+                        elev_set_button_lamp(button,floor,1);
+                    }
+                }
+            }
+
         }
         
         
