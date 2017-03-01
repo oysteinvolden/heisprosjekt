@@ -108,12 +108,12 @@ int queue_floorInQueue(int floor, int direction){
 }
 
 
-int queue_getNextOrder(int position, int direction){
+int queue_getNextOrder(int currentFloor, int direction){
     if(queueEmpty() == 0){
         return -1;
     }
     else{
-        return queue_selectNextOrder(position,direction);
+        return queue_selectNextOrder(currentFloor,direction);
     }
     
     return -1;
