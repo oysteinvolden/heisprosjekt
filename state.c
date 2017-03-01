@@ -66,8 +66,9 @@ void fsm_arrivedAtFloor(int signal_floor){
     switch (state) {
         case running:
             //check if the order is in right direction
-            
+            elev_button_type_t button1 = 0;
             if(queue_floorInQueue(currentFloor,direction) == 1){
+                
                 if (direction == 1){
                     elev_button_type_t button1 = 0;
                 }
