@@ -12,6 +12,7 @@
 
 
 static int queue[4][3];
+static int Nfloor = 4;
 
 void queue_initialize(){
     for (int i = 0; i< 4; i++){
@@ -21,13 +22,13 @@ void queue_initialize(){
     }
 }
 
-void queue_addToQueue(int floor, int buttondirn){
+void queue_addToQueue(int floor, int button){
     assert(floor >= 0 && floor <= 11);
     int counter = 1;
 
     
-    switch (buttondirn) {
-        case 1:
+    switch (button) {
+        case 0:
             
             for (int i =0; i<4; i++){
                 if (counter == floor){
@@ -37,7 +38,7 @@ void queue_addToQueue(int floor, int buttondirn){
                 counter++;
             }
             break;
-        case 2:
+        case 1:
             for (int i =0; i<4; i++){
                 if (counter == floor){
                     queue[i][1] = 1;
@@ -47,7 +48,7 @@ void queue_addToQueue(int floor, int buttondirn){
             }
             break;
             
-        case 3:
+        case 2:
             for (int i =0; i<4; i++){
                 if (counter == floor){
                     queue[i][2] = 1;
@@ -63,13 +64,13 @@ void queue_addToQueue(int floor, int buttondirn){
     }
 }
 
-void queue_removeOrder(int floor, int buttondirn){
+void queue_removeOrder(int floor, int button){
     assert(floor >= 0 && floor <= 11);
     int counter = 1;
     
     
-    switch (buttondirn) {
-        case 1:
+    switch (button) {
+        case 0:
             
             for (int i =0; i<4; i++){
                 if (counter == floor){
@@ -79,7 +80,7 @@ void queue_removeOrder(int floor, int buttondirn){
                 counter++;
             }
             break;
-        case 2:
+        case 1:
             for (int i =0; i<4; i++){
                 if (counter == floor){
                     queue[i][1] = 0;
@@ -89,7 +90,7 @@ void queue_removeOrder(int floor, int buttondirn){
             }
             break;
             
-        case 3:
+        case 2:
             for (int i =0; i<4; i++){
                 if (counter == floor){
                     queue[i][2] = 0;
@@ -107,17 +108,9 @@ void queue_removeOrder(int floor, int buttondirn){
 
 
 
-int queue_floorInQueue(int floor){
-    int counter = 0;
-    for (int i =0; i<4; i++){
-        for(int j= 0; j< 3; j++){
-            if(counter == floor){
-                return 1;
-            }
-        }
-        counter++;
-    }
-    return 0;
+int queue_floorInQueue(int floor, int button){
+    assert(floor >= 0 && floor <= (Nfloor-1);
+    return(queue[button][floor]);
 }
 
 
@@ -144,7 +137,7 @@ int queueEmpty(){
     return 0;
 }
 
-int queue_selectNextOrder(int thefloorwereatnow,int direction){
+int queue_selectNextOrder(int thefloorwereatnow,int buttondirn){
     
     switch (direction) {
         case 1:
