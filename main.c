@@ -5,6 +5,7 @@
 
 
 int main() {
+    /*
     // Initialize hardware
     if (!elev_init()) {
         printf("Unable to initialize elevator hardware!\n");
@@ -16,6 +17,10 @@ int main() {
     
     elev_set_motor_direction(DIRN_UP);
 
+     */
+    
+    fsm_initialize();
+    
     while (1) {
         
         
@@ -24,7 +29,7 @@ int main() {
                 for (int floor = 0; floor < 3; floor ++){
                 elev_button_type_t button = 0;
                 if(elev_get_button_signal(floor, button) == 1){
-                    //fsm_buttonIsPushed(floor,button);
+                    fsm_buttonIsPushed(floor,button);
                     elev_set_button_lamp(button,floor,1);
                 }
                 }

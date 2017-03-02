@@ -23,7 +23,12 @@ static int direction;
 
 
 void fsm_initialize(void){
-    elev_init();
+    if (!elev_init()) {
+        printf("Unable to initialize elevator hardware!\n");
+        return 1;
+    }
+    elev_set_motor_direction(DIRN_UP);
+    currentFloor = 2;
     state = idle;
 }
 
