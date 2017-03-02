@@ -21,14 +21,20 @@ static fsm_state state = noState;
 static int direction;
 
 
-
+//initialiserer og sørger for at current floor blir oppdatert og at heisen settes i stopp og idle
 void fsm_initialize(void){
     if (!elev_init()) {
         printf("Unable to initialize elevator hardware!\n");
-        return 1;
+        
     }
+    queue_initialize();
     elev_set_motor_direction(DIRN_UP);
-    currentFloor = 2;
+    direction = 1;
+    while(elev_get_floor_sensor_signal() == -1){
+    	//printf("sensor signal -1 \n");
+    }
+    currentFloor = elev_get_floor_sensor_signal();
+    elev_set_motor_direction(DIRN_STOP);
     state = idle;
 }
 
@@ -68,12 +74,13 @@ void fsm_arrivedAtFloor(int signal_floor){
     elev_button_type_t buttonout = 0;
     elev_button_type_t buttoninside= 0;
     
+
     switch (state) {
         case running:
             //check if the order is in right direction
-
+        	//printf("This should stop if 1    %d\n",(queue_floorInQueue(currentFloor,direction) == 1) );
             if(queue_floorInQueue(currentFloor,direction) == 1){
-                
+                printf("floor is in queue- should stop\n");
                 if (direction == 1){
                     elev_button_type_t buttonout = 0;
                 }
@@ -174,37 +181,44 @@ void fsm_chooseMotorDirection(){
     
 }
 
-void fsm_buttonIsPushed(int floor,elev_button_type_t button){
+void fsm_buttonIsPushed(elev_button_type_t button,int floor){
     //check if the button is valid
     //assert(button >= 0 && button <= 2);
     
     switch (state) {
         case idle:
-            queue_addToQueue(floor,button);
+        	printf(" current floor %d\n",currentFloor);
+            queue_addToQueue(button,floor);
             
-            targetFloor = queue_getNextOrder(floor,direction);
+            targetFloor = queue_getNextOrder(currentFloor,direction);
             fsm_chooseMotorDirection();
             elev_set_motor_direction(direction);
             state = running;
+            printQueue();
+            printf("direction %d\n",direction);
+            printf("target floor %d\n",targetFloor );
+
             break;
             
         case running:
-            queue_addToQueue(floor,button);
+            queue_addToQueue(button,floor);
+            //printQueue();
             break;
             
         case unloading:
-            queue_addToQueue(floor,button);
+            queue_addToQueue(button,floor);
             
             
         default:
             break;
     }
     
-    
-    
-    
-    
-    
+}
+
+
+void printhelper(){
+    printf("currentfloor %d\n",currentFloor );
+    printf("targetfloor %d\n",targetFloor );
 }
 
 

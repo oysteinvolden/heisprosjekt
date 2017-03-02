@@ -15,14 +15,14 @@
 #endif /* queue_h */
 
 void queue_initialize();
-void queue_addToQueue(int,elev_button_type_t);
+void queue_addToQueue(elev_button_type_t,int);
 void queue_removeOrder(int,int);
 int queue_floorInQueue(int,int);
 int queue_getNextOrder(int,int);
 int queue_selectNextOrder(int,int);
 int queueEmpty();
-
-
+int queueiteratorup(int, int);
+int queueiteratordown(int, int );
 void printQueue();
 
 

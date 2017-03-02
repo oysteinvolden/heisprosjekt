@@ -21,9 +21,9 @@ void fsm_arrivedAtFloor(int);
 void fsm_stopButtonPressed();
 void fsm_unloading();
 void fsm_stopButtonUnpressed();
-void fsm_buttonIsPushed(int,elev_button_type_t);
+void fsm_buttonIsPushed(elev_button_type_t,int);
 void fsm_chooseMotorDirection();
 void fsm_turnOfButtonLights();
-
+void printhelper();
 
 #endif /* state_h */
