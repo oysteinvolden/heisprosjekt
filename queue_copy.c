@@ -71,7 +71,7 @@ void queue_removeOrder(int floor, int direction){
 
 int queue_floorInQueue(int floor, int direction){
     //assert(floor >= 0 && floor <= 3));
-
+    // check if queue should stop in lowest or highest floor
     if(floor == 0 || floor == 3){
         if (queue[0][0] == 1 || queue[0][2] == 1){
             return 1;
@@ -79,29 +79,24 @@ int queue_floorInQueue(int floor, int direction){
         if (queue[3][1] == 1 || queue[3][2] == 1){
             return 1;
     }
-
+    }
 
     if(queue[floor][2] == 1){ //check if inside orders
         return 1;
     }
-    switch (direction) {
-        case 1:
+        if(direction == 1){
             printf("checking inside queue");
             if(queue[floor][0] == 1){
                 return 1;
             }
-            break;
-        
-        case -1:
+        }
+        else if{
             if(queue[floor][1] == 1){
-                return 1;
-        default:
-    return 0;
+                return[floor][1];
+        }
                 
-}
-}
+        }
     return 0;
-}
 }
 
 int queue_getNextOrder(int currentFloor, int direction){
