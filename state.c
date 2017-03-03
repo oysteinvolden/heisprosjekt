@@ -72,8 +72,8 @@ void fsm_arrivedAtFloor(int signal_floor){
     
     //set current floor
     currentFloor = signal_floor;
-    elev_button_type_t buttonout = 0;
-    elev_button_type_t buttoninside= 0;
+    elev_button_type_t buttonout;
+    elev_button_type_t buttoninside= 2;
     
 
     switch (state) {
@@ -83,21 +83,22 @@ void fsm_arrivedAtFloor(int signal_floor){
             if(queue_floorInQueue(currentFloor,direction) == 1){//direction set in fsm_initialize()
                 printf("floor is in queue- should stop\n");
                 if (direction == 1){
-                    //set button out to up
-                    elev_button_type_t buttonout = 0;
+                    buttonout = 0;
+                    queue_removeOrder(currentFloor,direction);
+                    elev_set_button_lamp(buttonout,signal_floor,0);
+                    elev_set_button_lamp(buttoninside,signal_floor,0);
                 }
-                else {
-                    //set button out to down
-                    elev_button_type_t buttonout = 1;
+                else if(queue_floorInQueue(currentFloor,direction) == 1) {
+                    buttonout = 1;
+                    queue_removeOrder(currentFloor,direction);
+                    elev_set_button_lamp(buttonout,signal_floor,0);
+                    elev_set_button_lamp(buttoninside,signal_floor,0);
+                    
                 }
                 //button inside is set independly of direction as long as it is in queue
-                elev_button_type_t buttoninside = 2;
                 
-                queue_removeOrder(currentFloor,direction);
-                elev_set_button_lamp(buttonout,signal_floor,0);
-                elev_set_button_lamp(buttoninside,signal_floor,0);
+                
                 fsm_unloading();
-                state = unloading;
                 break;
             }
             else if(queue_floorInQueue(currentFloor,direction) == 0){
@@ -154,6 +155,7 @@ void fsm_unloading(){
     elev_set_motor_direction(0);
     elev_set_door_open_lamp(1);
     timer_start();
+    state = unloading;
 }
 
 void fsm_stopButtonUnpressed(){
@@ -192,6 +194,7 @@ void fsm_buttonIsPushed(elev_button_type_t button,int floor){
     switch (state) {
         case idle:
         	printf(" current floor %d\n",currentFloor);
+            printf(" state %d\n",State);
             queue_addToQueue(button,floor);
             
             targetFloor = queue_getNextOrder(currentFloor,direction);
