@@ -34,7 +34,8 @@ void fsm_initialize(void){
     	//printf("sensor signal -1 \n");
     }
     //reached a floor
-    currentFloor = elev_get_floor_sensor_signal();
+    //currentFloor = elev_get_floor_sensor_signal();
+    currentFloor = 1;
     elev_set_motor_direction(DIRN_STOP);
     state = idle;
 }
@@ -74,10 +75,20 @@ void fsm_arrivedAtFloor(int signal_floor){
     currentFloor = signal_floor;
     elev_button_type_t buttonout;
     elev_button_type_t buttoninside= 2;
-    
 
+    /*
+    if(currentFloor == 0 || direction == -1){
+        switchDir(direction);
+    }
+    else if (currentFloor == 3 || direction == 1){
+        switchDir(direction);
+    }
+    */
+
+    printf("her skal vi inn i state running");
     switch (state) {
         case running:
+        //printf("inne i state running");
             //check if the order is in right direction
         	//printf("This should stop if 1    %d\n",(queue_floorInQueue(currentFloor,direction) == 1) );
             if(queue_floorInQueue(currentFloor,direction) == 1){//direction set in fsm_initialize()
@@ -88,7 +99,9 @@ void fsm_arrivedAtFloor(int signal_floor){
                     elev_set_button_lamp(buttonout,signal_floor,0);
                     elev_set_button_lamp(buttoninside,signal_floor,0);
                 }
-                else if(queue_floorInQueue(currentFloor,direction) == 1) {
+                //her er det klart feil dersom vi er på vei ned og skal plukke opp noen på vei oppp.... 
+
+                else if(direction == -1) {
                     buttonout = 1;
                     queue_removeOrder(currentFloor,direction);
                     elev_set_button_lamp(buttonout,signal_floor,0);
@@ -97,7 +110,7 @@ void fsm_arrivedAtFloor(int signal_floor){
                 }
                 //button inside is set independly of direction as long as it is in queue
                 
-                
+                printf("Nå skal vi egentlig stoppe");
                 fsm_unloading();
                 break;
             }
@@ -194,7 +207,7 @@ void fsm_buttonIsPushed(elev_button_type_t button,int floor){
     switch (state) {
         case idle:
         	printf(" current floor %d\n",currentFloor);
-            printf(" state %d\n",State);
+            printf(" state %d\n",state);
             queue_addToQueue(button,floor);
             
             targetFloor = queue_getNextOrder(currentFloor,direction);
@@ -222,10 +235,20 @@ void fsm_buttonIsPushed(elev_button_type_t button,int floor){
     
 }
 
+void switchDir(int direction){
+    if (direction == 1){
+        direction = -1;
+    }
+    else if (direction== -1){
+        direction = 1;
+    }
+}
 
 void printhelper(){
     printf("currentfloor %d\n",currentFloor );
     printf("targetfloor %d\n",targetFloor );
+    printf(" state %d\n",state);
+
 }
 
 

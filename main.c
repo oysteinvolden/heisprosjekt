@@ -67,21 +67,23 @@ int main() {
             }
 
         }
-        
-        
-        
-        printf("hallohallo\n");
-        
+        //button = 0; 
+        //int floor = 0;
+        //fsm_buttonIsPushed(button,floor);
+        //printf(elev_get_floor_sensor_signal());
+
         //sjekker om heisen står i en etasje - dette funker
+        
         if(elev_get_floor_sensor_signal() != -1){
             printf("Får signal og går til arrived at floor\n");
             fsm_arrivedAtFloor(elev_get_floor_sensor_signal());
         }
-
+        
         printhelper();
         printQueue();
         
-        
+        fsm_timeOut();
+
         if (elev_get_floor_sensor_signal() == 3){
             elev_set_motor_direction(DIRN_DOWN);
 

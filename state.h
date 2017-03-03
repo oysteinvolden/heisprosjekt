@@ -25,5 +25,6 @@ void fsm_buttonIsPushed(elev_button_type_t,int);
 void fsm_chooseMotorDirection();
 void fsm_turnOfButtonLights();
 void printhelper();
+void switchDir(int);
 
 #endif /* state_h */
