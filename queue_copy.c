@@ -46,21 +46,20 @@ void queue_addToQueue(elev_button_type_t button, int floor){
 
 void queue_removeOrder(int floor, int direction){
     assert(floor >= 0 && floor <= 3);
-    int counter = 1;
+    int counter = 1;//what is this doing?
     
+    //delete order in button inside (first priority)
     queue[floor][2]= 0;
     switch (direction) {
         case 1:
-            
+            //if direction up, the order up in floor is deleted
             queue[floor][0]= 0;
             break;
             
         case -1:
+            //if direction down, the order down in floor is deleted
             queue[floor][1]= 0;
             break;
-            
-        
-            
             
         default:
             break;
@@ -68,7 +67,7 @@ void queue_removeOrder(int floor, int direction){
 }
 
 
-
+//will just verify if the requirements is satisfied, not priority between orders
 int queue_floorInQueue(int floor, int direction){
     //assert(floor >= 0 && floor <= 3));
     // check if queue should stop in lowest or highest floor
@@ -80,19 +79,22 @@ int queue_floorInQueue(int floor, int direction){
             return 1;
     }
     }
-
-    if(queue[floor][2] == 1){ //check if inside orders
+    
+    //check if inside orders (will be priorited)
+    if(queue[floor][2] == 1){
         return 1;
     }
-        if(direction == 1){
+    
+    //checking if direction
+    if(direction == 1){
             printf("checking inside queue");
             if(queue[floor][0] == 1){
                 return 1;
             }
         }
-        else if{
+        else if(direction == -1){
             if(queue[floor][1] == 1){
-                return[floor][1];
+                return 1;
         }
                 
         }

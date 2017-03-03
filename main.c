@@ -71,6 +71,7 @@ int main() {
         
         
         
+        
         //sjekker om heisen står i en etasje - dette funker
         if(elev_get_floor_sensor_signal() != -1){
             //printf("Får signal og går til arrived at floor\n");

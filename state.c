@@ -27,12 +27,13 @@ void fsm_initialize(void){
         printf("Unable to initialize elevator hardware!\n");
         
     }
-    queue_initialize();
+    queue_initialize();//clean queue matrix
     elev_set_motor_direction(DIRN_UP);
     direction = 1;
     while(elev_get_floor_sensor_signal() == -1){
     	//printf("sensor signal -1 \n");
     }
+    //reached a floor
     currentFloor = elev_get_floor_sensor_signal();
     elev_set_motor_direction(DIRN_STOP);
     state = idle;
@@ -79,14 +80,17 @@ void fsm_arrivedAtFloor(int signal_floor){
         case running:
             //check if the order is in right direction
         	//printf("This should stop if 1    %d\n",(queue_floorInQueue(currentFloor,direction) == 1) );
-            if(queue_floorInQueue(currentFloor,direction) == 1){
+            if(queue_floorInQueue(currentFloor,direction) == 1){//direction set in fsm_initialize()
                 printf("floor is in queue- should stop\n");
                 if (direction == 1){
+                    //set button out to up
                     elev_button_type_t buttonout = 0;
                 }
                 else {
+                    //set button out to down
                     elev_button_type_t buttonout = 1;
                 }
+                //button inside is set independly of direction as long as it is in queue
                 elev_button_type_t buttoninside = 2;
                 
                 queue_removeOrder(currentFloor,direction);
