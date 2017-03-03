@@ -23,10 +23,21 @@ int main() {
     fsm_initialize();
 
     elev_button_type_t button;
+
+    //kommentarer:
+    //fsm_buttonIsPushed må kodes bedre. 
+    //fsm_chooseMotorDirection() tror jeg er ok i seg selv,
+    //men vil ikke fungere så lenge ButtonIsPushed ikke oppdaterer currentTarget riktig.
+    //må ha enkel oversikt over sist målte etasje - ok
+    //må ha en lette oversikt over knappene. Kanksje samle knappenetypene i en struct?
+    
     
 
 
     while (1) {
+
+        //first set the last floor that is detected by the floor sensor
+        fsm_LastMeasuredFloor();
         
 
         for(int i = 0; i< 3; i++){
@@ -76,21 +87,28 @@ int main() {
         
         if(elev_get_floor_sensor_signal() != -1){
             printf("Får signal og går til arrived at floor\n");
+            //printf("floor signal: %d\n",elev_get_floor_sensor_signal());
             fsm_arrivedAtFloor(elev_get_floor_sensor_signal());
         }
+
+        printf("heyhey1\n");
         
         printhelper();
         printQueue();
         
         fsm_timeOut();
 
+        printf("heyhey2\n");
+        printf("sensor signal: %d\n",elev_get_floor_sensor_signal());
         if (elev_get_floor_sensor_signal() == 3){
+            printf("heyhey 4 floor\n");
             elev_set_motor_direction(DIRN_DOWN);
-
+            //fsm_chooseMotorDirection(DIRN_DOWN); 
         }
         if(elev_get_floor_sensor_signal() == 0){
+            printf("heyhey 1 floor\n");
             elev_set_motor_direction(DIRN_UP);
-
+            //fsm_chooseMotorDirection(DIRN_UP);
         }
     }
     return 0;

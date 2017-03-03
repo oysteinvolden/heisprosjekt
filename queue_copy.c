@@ -7,10 +7,12 @@
 //
 
 #include "queue_copy.h"
+//#include "state.h"
 #include <assert.h>
 
 static int queue[4][3];
 static int Nfloor = 4;
+static int lastUpdatedFloor;
 
 void queue_initialize(){
     for (int i = 0; i< 4; i++){
@@ -67,15 +69,17 @@ void queue_removeOrder(int floor, int direction){
 }
 
 
-//will just verify if the requirements is satisfied, not priority between orders
+//will just verify if the conditions is satisfied, not priority between orders
 int queue_floorInQueue(int floor, int direction){
     //assert(floor >= 0 && floor <= 3));
     // check if queue should stop in lowest or highest floor
     if(floor == 0 || floor == 3){
         if (queue[0][0] == 1 || queue[0][2] == 1){
+            //switchDir(direction);
             return 1;
         }
         if (queue[3][1] == 1 || queue[3][2] == 1){
+            //switchDir(direction);
             return 1;
     }
     }
@@ -101,6 +105,7 @@ int queue_floorInQueue(int floor, int direction){
     return 0;
 }
 
+//obs: a state function set a floor as -1, if getNextOrder return -1.
 int queue_getNextOrder(int currentFloor, int direction){
     
     if(queueEmpty() == 0){
@@ -261,4 +266,12 @@ void printQueue(){
             }
         }
     }
+}
+
+void queue_setUpdatedFloor(int floor){
+    lastUpdatedFloor = floor;
+}
+
+int queue_getUpdatedFloor(){
+    return lastUpdatedFloor;
 }

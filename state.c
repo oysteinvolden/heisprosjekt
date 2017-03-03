@@ -40,6 +40,23 @@ void fsm_initialize(void){
     state = idle;
 }
 
+void fsm_LastMeasuredFloor(){
+    switch(elev_get_floor_sensor_signal()){
+        case 0:
+            queue_setUpdatedFloor(0);
+        case 1:
+            queue_setUpdatedFloor(1);
+        case 2:
+            queue_setUpdatedFloor(2);
+        case 3:
+            queue_setUpdatedFloor(3);
+        default:
+        break;
+    }
+
+        
+}
+
 void fsm_timeOut(){
     
     timer_reset();//kanskje innenfor switch løkka?
@@ -85,7 +102,8 @@ void fsm_arrivedAtFloor(int signal_floor){
     }
     */
 
-    printf("her skal vi inn i state running");
+    printf("her skal vi inn i state running\n");
+    //printf(" state %d\n",state);//ok
     switch (state) {
         case running:
         //printf("inne i state running");
@@ -93,24 +111,33 @@ void fsm_arrivedAtFloor(int signal_floor){
         	//printf("This should stop if 1    %d\n",(queue_floorInQueue(currentFloor,direction) == 1) );
             if(queue_floorInQueue(currentFloor,direction) == 1){//direction set in fsm_initialize()
                 printf("floor is in queue- should stop\n");
+                printf("direction:%d\n",direction);
                 if (direction == 1){
-                    buttonout = 0;
+                    printf("in direction 1\n");
+                    buttonout = 1;//endret fra 0 til 1 her (f.eks 4.etg: buttonout = 1 (=call_down) )
                     queue_removeOrder(currentFloor,direction);
+                    printf("hei 1\n");
+                    printf("button (should be button_call_down= 0):%d\n",buttonout);
+                    printf("floor (should be 3):%d\n",signal_floor);
                     elev_set_button_lamp(buttonout,signal_floor,0);
                     elev_set_button_lamp(buttoninside,signal_floor,0);
+                    
                 }
                 //her er det klart feil dersom vi er på vei ned og skal plukke opp noen på vei oppp.... 
 
                 else if(direction == -1) {
-                    buttonout = 1;
+                    printf("in direction -1\n");
+                    buttonout = 0;//tilsvarende fra 1 til 0 her ved 1 etasje
                     queue_removeOrder(currentFloor,direction);
+                    printf("button (should be equal button_call_up = 1):%d\n",buttonout);
+                    printf("floor (should be equal 0):%d\n",signal_floor);
                     elev_set_button_lamp(buttonout,signal_floor,0);
                     elev_set_button_lamp(buttoninside,signal_floor,0);
                     
                 }
                 //button inside is set independly of direction as long as it is in queue
                 
-                printf("Nå skal vi egentlig stoppe");
+                printf("Nå skal vi egentlig stoppe\n");
                 fsm_unloading();
                 break;
             }
@@ -165,6 +192,7 @@ void fsm_stopButtonPressed(){
 }
 
 void fsm_unloading(){
+    printf("er i unloading\n");
     elev_set_motor_direction(0);
     elev_set_door_open_lamp(1);
     timer_start();
@@ -190,19 +218,36 @@ void fsm_stopButtonUnpressed(){
 
 
 //local function
+/*
 void fsm_chooseMotorDirection(){
+     printf("direction before %d\n",direction);
     if(targetFloor > currentFloor){
         direction = 1;
     }
     else if(targetFloor < currentFloor){
         direction = -1;
     }
-    
+    printf("direction after %d\n",direction);
+}*/
+
+void fsm_chooseMotorDirection(){
+     if (elev_get_floor_sensor_signal() == 3){
+        direction = -1;
+     }
+     else if(elev_get_floor_sensor_signal() == 0){
+        direction = 1;
+    }
 }
 
 void fsm_buttonIsPushed(elev_button_type_t button,int floor){
     //check if the button is valid
     //assert(button >= 0 && button <= 2);
+
+    //set current floor
+    //currentFloor = signal_floor;
+    //elev_button_type_t buttonout;
+    //elev_button_type_t buttoninside= 2;
+
     
     switch (state) {
         case idle:
@@ -210,18 +255,33 @@ void fsm_buttonIsPushed(elev_button_type_t button,int floor){
             printf(" state %d\n",state);
             queue_addToQueue(button,floor);
             
+            //Case: Heisen starter i 1.etasje og får en bestilling fra 4.etasje. Heisen 
+            //kjører til 4.etasje
+
+
             targetFloor = queue_getNextOrder(currentFloor,direction);
             fsm_chooseMotorDirection();
             elev_set_motor_direction(direction);
             state = running;
             printQueue();
             printf("direction %d\n",direction);
-            printf("target floor %d\n",targetFloor );
+            printf("target floor %d\n",targetFloor);
 
             break;
             
         case running:
             queue_addToQueue(button,floor);
+            //must happend things here as well...(?)
+            /*
+            targetFloor = queue_getNextOrder(currentFloor,direction);//this is not right if it returns -1
+            fsm_chooseMotorDirection();
+            elev_set_motor_direction(direction);
+            state = running;
+            printQueue();
+            printf("direction %d\n",direction);
+            printf("target floor %d\n",targetFloor);
+            */
+
             //printQueue();
             break;
             
@@ -248,7 +308,6 @@ void printhelper(){
     printf("currentfloor %d\n",currentFloor );
     printf("targetfloor %d\n",targetFloor );
     printf(" state %d\n",state);
-
 }
 
 

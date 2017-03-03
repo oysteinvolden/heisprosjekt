@@ -26,5 +26,6 @@ void fsm_chooseMotorDirection();
 void fsm_turnOfButtonLights();
 void printhelper();
 void switchDir(int);
+void fsm_LastMeasuredFloor();
 
 #endif /* state_h */
