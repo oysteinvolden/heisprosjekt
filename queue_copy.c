@@ -12,7 +12,7 @@
 
 static int queue[4][3];
 static int Nfloor = 4;
-static int lastUpdatedFloor;
+
 
 void queue_initialize(){
     for (int i = 0; i< 4; i++){
@@ -73,11 +73,15 @@ void queue_removeOrder(int floor, int direction){
 int queue_floorInQueue(int floor, int direction){
     //assert(floor >= 0 && floor <= 3));
     // check if queue should stop in lowest or highest floor
-    if(floor == 0 || floor == 3){
+    
+    if(floor == 0){
         if (queue[0][0] == 1 || queue[0][2] == 1){
             //switchDir(direction);
             return 1;
         }
+        }
+        
+       if (floor == 3){
         if (queue[3][1] == 1 || queue[3][2] == 1){
             //switchDir(direction);
             return 1;
@@ -151,6 +155,7 @@ int queueiteratorup(int currentFloor, int it){
             //printf("denne skal være%d\n",queue[i][it] );
 
             if (queue[i][it] == 1){
+            	printf("her skal vi retuirnere 3 %d\n ", i); 
                 return (i);
             }
         }
@@ -170,12 +175,16 @@ int queueiteratordown(int currentFloor, int it){
 
 int queue_selectNextOrder(int currentFloor,int direction){
     printf("queue_selectNextOrder");
+    
     if (currentFloor == 3) {
         direction = -1;
     }
     if(currentFloor == 0){
         direction = 1;
     }
+    
+    
+    
     //printf("%d heisdireksjon",direction);
     if (direction == 1){
             printf("case 2");
@@ -185,16 +194,26 @@ int queue_selectNextOrder(int currentFloor,int direction){
                 return queueiteratorup(currentFloor,2);
             }
             
+            
+            // her må vi sjekke at dersom vil ned > vil opp så skal target floor settes til ned ellers skal opp gjelde. 
             //is there someone over us wanting down?
             
-            if (queueiteratorup(currentFloor,1) != -1){
-                return queueiteratorup(currentFloor,1);
+            if (queueiteratorup(currentFloor,1)>queueiteratorup(currentFloor,0)){
+            	return queueiteratorup(currentFloor,1);
             }
+            
             //is there someone over us wanting up?
             
             if (queueiteratorup(currentFloor,0) != -1){
                 return queueiteratorup(currentFloor,0);
             }
+            
+            if (queueiteratorup(currentFloor,1) != -1){
+                return queueiteratorup(currentFloor,1);
+            }
+           
+            
+           
             printf("not working");
     }
             //OBS OBS denne rekkefølgen må dobbeltsjekkes men tror den stemmer
@@ -207,6 +226,10 @@ int queue_selectNextOrder(int currentFloor,int direction){
        if (queueiteratordown(currentFloor,2) != -1){
                 printf("hei");
                 return queueiteratordown(currentFloor,2);
+            }
+            
+            if (queueiteratordown(currentFloor,1)>queueiteratordown(currentFloor,0)){
+            	return queueiteratordown(currentFloor,0);
             }
             
             //is there someone under us wanting down?
@@ -268,6 +291,8 @@ void printQueue(){
     }
 }
 
+
+/*
 void queue_setUpdatedFloor(int floor){
     lastUpdatedFloor = floor;
 }
@@ -275,3 +300,4 @@ void queue_setUpdatedFloor(int floor){
 int queue_getUpdatedFloor(){
     return lastUpdatedFloor;
 }
+*/

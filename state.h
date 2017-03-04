@@ -17,7 +17,7 @@
 
 void fsm_initialize();
 void fsm_timeOut();
-void fsm_arrivedAtFloor(int);
+int fsm_arrivedAtFloor(int);
 void fsm_stopButtonPressed();
 void fsm_unloading();
 void fsm_stopButtonUnpressed();
@@ -27,5 +27,6 @@ void fsm_turnOfButtonLights();
 void printhelper();
 void switchDir(int);
 void fsm_LastMeasuredFloor();
-
+void fsm_deleteAllOrders();
+int getstate();
 #endif /* state_h */

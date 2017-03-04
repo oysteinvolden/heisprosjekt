@@ -35,11 +35,14 @@ void fsm_initialize(void){
     }
     //reached a floor
     //currentFloor = elev_get_floor_sensor_signal();
-    currentFloor = 1;
+    
+    targetFloor = -1;
     elev_set_motor_direction(DIRN_STOP);
     state = idle;
+    timer_reset();
 }
 
+/*
 void fsm_LastMeasuredFloor(){
     switch(elev_get_floor_sensor_signal()){
         case 0:
@@ -57,22 +60,28 @@ void fsm_LastMeasuredFloor(){
         
 }
 
+*/
+
 void fsm_timeOut(){
     
     timer_reset();//kanskje innenfor switch løkka?
+    targetFloor = queue_getNextOrder(currentFloor,direction);
     
     switch(state){
         case unloading:
+        	
             //no order in queue
-            if(queue_selectNextOrder(currentFloor,direction) == 0){
+            printf("target floor skal være %d\n", targetFloor);
+            if(targetFloor== -1){
+            	//assert(0);
                 elev_set_door_open_lamp(0);
                 state = idle;
                 //more things happening here?
             }
             //order in queue
-            else if(queue_selectNextOrder(currentFloor,direction) >= 1 && queue_selectNextOrder(currentFloor,direction) <= 3){
+            else if(targetFloor != -1){
                 elev_set_door_open_lamp(0);
-                targetFloor = queue_getNextOrder(currentFloor,direction);
+                //targetFloor = queue_getNextOrder(currentFloor,direction);
                 fsm_chooseMotorDirection();
                 elev_set_motor_direction(direction);
                 state = running;
@@ -84,23 +93,156 @@ void fsm_timeOut(){
 }
 
 
+int fsm_arrivedAtFloor(int signalFloor){
+	
+	
+	
+	if(signalFloor != -1){
+	currentFloor = signalFloor;
+    elev_set_floor_indicator(currentFloor);
+    }
+    int unload;
+    switch (state){
+    	case running:
+    		
+    		//Stops if in first or last floor if any button is pushed here..
+    		
+    		if (currentFloor == targetFloor){
+    			unload = 1;
+    			
+    			if(currentFloor == 0){
+    				unload = 1;
+    				elev_set_button_lamp(0,currentFloor,0);
+                    elev_set_button_lamp(2,currentFloor,0);
+                    queue_removeOrder(currentFloor,1);
+    			}
+    			else if(currentFloor == 3){
+    				unload = 1;
+    				elev_set_button_lamp(1,currentFloor,0);
+                    elev_set_button_lamp(2,currentFloor,0);
+                    queue_removeOrder(currentFloor,-1);
+    			}
+    			
+    			else if(currentFloor >0 || currentFloor < 3){
+    				printf("skal skru av lys \n");
+    				unload = 1;
+    				elev_set_button_lamp(0,currentFloor,0);
+    				elev_set_button_lamp(1,currentFloor,0);
+    				elev_set_button_lamp(2,currentFloor,0);
+    				queue_removeOrder(currentFloor,-1);
+    				queue_removeOrder(currentFloor,1);
+    				
+    			}
+    			
+    			fsm_unloading();
+    			return 1;
+    			
+    		}
+    				
+    		/*		
+    			//stopper uansett dersom bestilling i første eller fjerde etasje	
+    		if(currentFloor == 0){
+    		
+    			
+    		if (queue_floorInQueue(currentFloor, 1) || queue_floorInQueue(currentFloor, -1)){
+    				assert(0);
+    				unload = 1;
+    				elev_set_button_lamp(0,currentFloor,0);
+                    elev_set_button_lamp(2,currentFloor,0);
+                    queue_removeOrder(currentFloor,1);
+                    
+                    fsm_unloading();
+    				return 1;
+    			}
+    			}
+    		if(currentFloor == 3){
+    				if (queue_floorInQueue(currentFloor, 1) || queue_floorInQueue(currentFloor, -1)){
+    				unload = 1;
+    				elev_set_button_lamp(1,currentFloor,0);
+                    elev_set_button_lamp(2,currentFloor,0);
+                    queue_removeOrder(currentFloor,-1);
+                    fsm_unloading();
+    				return 1;
+    			}
+    			
+    		}
+    		*/
+    		
+    		//stopper dersom bestilling i samme retning som heisen kjører
+    	
+    		//assert(direction == -1); 
+    		
+    		if(queue_floorInQueue(currentFloor,direction) == 1){
+    			unload = 1;
+    			//assert(direction == -1); 
+    			if(direction == -1){
+    				if(currentFloor == 0) {
+    					elev_set_button_lamp(0,currentFloor,0);
+    					elev_set_button_lamp(2,currentFloor,0);
+    				}
+    				else if(currentFloor == 3){
+    					
+    					elev_set_button_lamp(1,currentFloor,0);
+    					elev_set_button_lamp(2,currentFloor,0);
+    				}
+    				else {
+    				elev_set_button_lamp(0,currentFloor,0);
+    				elev_set_button_lamp(1,currentFloor,0);
+    				elev_set_button_lamp(2,currentFloor,0);
+    				}
+    				queue_removeOrder(currentFloor,direction);
+    				fsm_unloading();
+    			}
+    		else if(direction == 1){
+    				if(currentFloor == 0) {
+    					elev_set_button_lamp(0,currentFloor,0);
+    					elev_set_button_lamp(2,currentFloor,0);
+    				}
+    				else if(currentFloor == 3){
+    					
+    					elev_set_button_lamp(1,currentFloor,0);
+    					elev_set_button_lamp(2,currentFloor,0);
+    				}
+    				else {
+    			elev_set_button_lamp(0,currentFloor,0);
+    			elev_set_button_lamp(1,currentFloor,0);
+    			elev_set_button_lamp(2,currentFloor,0);
+    			}
+    			queue_removeOrder(currentFloor,direction);
+    		
+    			fsm_unloading();
+    		}
+    		
+    		
+    		return 1;
+    		}
+    		
+    		
+    		
+    		
+    }
+    return 0;
+}
 
-
+/*
 void fsm_arrivedAtFloor(int signal_floor){
     
     //set current floor
     currentFloor = signal_floor;
+    elev_set_floor_indicator(signal_floor);
+    
+    
     elev_button_type_t buttonout;
     elev_button_type_t buttoninside= 2;
 
-    /*
+    
     if(currentFloor == 0 || direction == -1){
         switchDir(direction);
     }
     else if (currentFloor == 3 || direction == 1){
         switchDir(direction);
     }
-    */
+
 
     printf("her skal vi inn i state running\n");
     //printf(" state %d\n",state);//ok
@@ -154,6 +296,7 @@ void fsm_arrivedAtFloor(int signal_floor){
     
 }
 
+*/
 
 //local function
 void fsm_turnOfButtonLights(){
@@ -166,22 +309,55 @@ void fsm_turnOfButtonLights(){
     
 }
 
+void fsm_unloading(){
+    printf("er i unloading\n");
+    elev_set_motor_direction(0);
+    elev_set_door_open_lamp(1);
+    timer_start();
+    state = unloading;
+    
+}
 
-void fsm_stopButtonPressed(){
+void fsm_stopButtonPressed(int floor){
     switch (state) {
+    
         case running:
-            state = emergency_stop_between_floor;
-            break;
+        if(floor == -1){
+        	
+        	state = emergency_stop_between_floor;
             
+            }
+        else{
+        state = emergency_stop_in_floor;
+        }
+        	elev_set_motor_direction(0);
+            fsm_deleteAllOrders();
+            elev_set_stop_lamp(1);
+            printf("state er %d\n",state);
+            break;
+        
+        
+         
         case idle:
-            state = emergency_stop_in_floor;
+        
+        	if(floor == -1){
+        	
+        		state = emergency_stop_between_floor;
+            
+            	}
+        	else{
+        	state = emergency_stop_in_floor;
+        	}
+        	
+            
+            fsm_deleteAllOrders();
+            elev_set_stop_lamp(1);
             break;
             
         case unloading:
-            elev_set_motor_direction(1);
-            elev_set_door_open_lamp(1);
-            queue_initialize();//delete all orders
-            fsm_turnOfButtonLights();
+            elev_set_motor_direction(0);
+            fsm_deleteAllOrders();
+            elev_set_stop_lamp(1);
             
             state = emergency_stop_in_floor;
             break;
@@ -191,23 +367,33 @@ void fsm_stopButtonPressed(){
     }
 }
 
-void fsm_unloading(){
-    printf("er i unloading\n");
-    elev_set_motor_direction(0);
-    elev_set_door_open_lamp(1);
-    timer_start();
-    state = unloading;
+void fsm_deleteAllOrders(){
+	queue_initialize();
+    
+    //set all inner lights off
+    
+    for (int i = 0; i < 4; i++){
+    	elev_set_button_lamp(2,i,0);
+    }
+    for (int i = 0; i < 3; i++){
+    	elev_set_button_lamp(0,i,0);
+    }
+    
+    for (int i = 1; i < 4; i++){
+    	elev_set_button_lamp(1,i,0);
+    }
 }
+
 
 void fsm_stopButtonUnpressed(){
     switch (state) {
         case emergency_stop_in_floor:
             fsm_unloading();
-            state = unloading;
+            elev_set_stop_lamp(0);
             break;
             
         case emergency_stop_between_floor:
-            
+            elev_set_stop_lamp(0);
             state = idle;
             break;
             
@@ -218,7 +404,7 @@ void fsm_stopButtonUnpressed(){
 
 
 //local function
-/*
+
 void fsm_chooseMotorDirection(){
      printf("direction before %d\n",direction);
     if(targetFloor > currentFloor){
@@ -228,16 +414,21 @@ void fsm_chooseMotorDirection(){
         direction = -1;
     }
     printf("direction after %d\n",direction);
-}*/
-
-void fsm_chooseMotorDirection(){
-     if (elev_get_floor_sensor_signal() == 3){
-        direction = -1;
-     }
-     else if(elev_get_floor_sensor_signal() == 0){
-        direction = 1;
+    
+    if(targetFloor == currentFloor){
+    	
+    	
+    	if(direction == 1){
+    		direction = -1;
     }
+    	else {
+    	direction = 1;
+    	}	
+    } 
+    
 }
+
+
 
 void fsm_buttonIsPushed(elev_button_type_t button,int floor){
     //check if the button is valid
@@ -271,6 +462,9 @@ void fsm_buttonIsPushed(elev_button_type_t button,int floor){
             
         case running:
             queue_addToQueue(button,floor);
+            targetFloor = queue_getNextOrder(currentFloor,direction);
+            fsm_chooseMotorDirection();
+            elev_set_motor_direction(direction);
             //must happend things here as well...(?)
             /*
             targetFloor = queue_getNextOrder(currentFloor,direction);//this is not right if it returns -1
@@ -287,6 +481,9 @@ void fsm_buttonIsPushed(elev_button_type_t button,int floor){
             
         case unloading:
             queue_addToQueue(button,floor);
+            targetFloor = queue_getNextOrder(currentFloor,direction);
+            fsm_chooseMotorDirection();
+            //elev_set_motor_direction(direction);
             
             
         default:
@@ -307,11 +504,14 @@ void switchDir(int direction){
 void printhelper(){
     printf("currentfloor %d\n",currentFloor );
     printf("targetfloor %d\n",targetFloor );
+    printf("direction %d\n",direction);
     printf(" state %d\n",state);
 }
 
 
-
+int getstate(){
+	return state;
+}
 
 
 

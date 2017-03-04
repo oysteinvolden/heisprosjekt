@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <time.h>
+#include "assert.h"
 
 #ifndef HEADER_FILE
 #define HEADER_FILE
@@ -33,15 +34,13 @@ int timer_isTimeOut(){
         float dif =  difftime(end, start);
         printf("Execution time = %f\n", dif);
 
-        if((dif) < 3.1 && dif > 2.9){
+        if(dif < 3.1 && dif > 2.9){
             return 1;
         }
     
         else{
             return -1;
         }
-    
-    
     
     
 }

@@ -36,8 +36,8 @@ int main() {
 
     while (1) {
 
-        //first set the last floor that is detected by the floor sensor
-        fsm_LastMeasuredFloor();
+       
+        
         
 
         for(int i = 0; i< 3; i++){
@@ -96,11 +96,26 @@ int main() {
         printhelper();
         printQueue();
         
-        fsm_timeOut();
+        if(timer_isTimeOut()== 1){
+        	printf("nå har det gått 3 sekunder");
+        	fsm_timeOut();
+        }
+       
+       if(elev_get_stop_signal()){
+       		fsm_stopButtonPressed(elev_get_floor_sensor_signal());
+       		
+       while(elev_get_stop_signal()){
 
+       }
+       fsm_stopButtonUnpressed();
+       
+       }
+       
+       //printf("dette er utskriften til elev stop button %d\n",elev_get_stop_signal());
+/*
         printf("heyhey2\n");
         printf("sensor signal: %d\n",elev_get_floor_sensor_signal());
-        if (elev_get_floor_sensor_signal() == 3){
+       if (elev_get_floor_sensor_signal() == 3){
             printf("heyhey 4 floor\n");
             elev_set_motor_direction(DIRN_DOWN);
             //fsm_chooseMotorDirection(DIRN_DOWN); 
@@ -110,6 +125,7 @@ int main() {
             elev_set_motor_direction(DIRN_UP);
             //fsm_chooseMotorDirection(DIRN_UP);
         }
+        */
     }
     return 0;
 }
