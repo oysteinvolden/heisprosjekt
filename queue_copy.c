@@ -95,7 +95,7 @@ int queue_floorInQueue(int floor, int direction){
     
     //checking if direction
     if(direction == 1){
-            printf("checking inside queue");
+            //printf("checking inside queue");
             if(queue[floor][0] == 1){
                 return 1;
             }
@@ -116,7 +116,7 @@ int queue_getNextOrder(int currentFloor, int direction){
         return -1;
     }
     else{
-        printf("return true order %d\n", queue_selectNextOrder(currentFloor,direction) );
+        //printf("return true order %d\n", queue_selectNextOrder(currentFloor,direction) );
 
         //dersom det bare ligger en bestilling i køen og den er over eller under retningen vi kjører nå
         if(queue_selectNextOrder(currentFloor,direction) == -1){
@@ -155,7 +155,7 @@ int queueiteratorup(int currentFloor, int it){
             //printf("denne skal være%d\n",queue[i][it] );
 
             if (queue[i][it] == 1){
-            	printf("her skal vi retuirnere 3 %d\n ", i); 
+            	//printf("her skal vi retuirnere 3 %d\n ", i); 
                 return (i);
             }
         }
@@ -174,23 +174,24 @@ int queueiteratordown(int currentFloor, int it){
 
 
 int queue_selectNextOrder(int currentFloor,int direction){
-    printf("queue_selectNextOrder");
+    //printf("queue_selectNextOrder");
     
+    /*
     if (currentFloor == 3) {
         direction = -1;
     }
     if(currentFloor == 0){
         direction = 1;
     }
-    
+    */
     
     
     //printf("%d heisdireksjon",direction);
     if (direction == 1){
-            printf("case 2");
+            //printf("case 2");
             // is there someone inside wanting up?
             if (queueiteratorup(currentFloor,2) != -1){
-                printf("hei");
+                
                 return queueiteratorup(currentFloor,2);
             }
             
@@ -214,34 +215,39 @@ int queue_selectNextOrder(int currentFloor,int direction){
            
             
            
-            printf("not working");
+            //printf("not working");
     }
             //OBS OBS denne rekkefølgen må dobbeltsjekkes men tror den stemmer
             
             
     if(direction == -1){
-            printf("case -1");
+            //printf("case -1");
             // is there someone inside wanting down?
 
        if (queueiteratordown(currentFloor,2) != -1){
-                printf("hei");
+                
                 return queueiteratordown(currentFloor,2);
             }
             
-            if (queueiteratordown(currentFloor,1)>queueiteratordown(currentFloor,0)){
-            	return queueiteratordown(currentFloor,0);
+            if ((queueiteratordown(currentFloor,1) != -1) && (queueiteratordown(currentFloor,0) != -1)){
+            	if(queueiteratordown(currentFloor,1) > queueiteratordown(currentFloor,0)){
+                    //assert(0);
+                    return queueiteratordown(currentFloor,0);
+
             }
+        }
             
             //is there someone under us wanting down?
             
             if (queueiteratordown(currentFloor,1) != -1){
+                //assert(0);
                 return queueiteratordown(currentFloor,1);
             }
             //is there someone under us wanting up?
             
             if (queueiteratordown(currentFloor,0) != -1){
                 return queueiteratordown(currentFloor,0);
-
+            }
             // is there someone inside wanting down?
             /*
             for(int i =0; i < (currentFloor); i++){
@@ -269,7 +275,7 @@ int queue_selectNextOrder(int currentFloor,int direction){
             }
             */
     //}
-    }
+    
 }
 return -1;
 }

@@ -57,7 +57,7 @@ int main() {
             //checks if button pressed down
             if (i == 1){
                 button = 1;
-                for (int floor = 1; floor <= 3; floor ++){
+                for (int floor = 1; floor < 4; floor ++){
                     
                     if(elev_get_button_signal(button, floor) == 1){
                         fsm_buttonIsPushed(button,floor);
@@ -68,7 +68,7 @@ int main() {
             //checks if button pressed inside
             if (i == 2){
                 button = 2;
-                for (int floor = 0; floor <= 3; floor ++){
+                for (int floor = 0; floor < 4; floor ++){
                     
                     if(elev_get_button_signal(button, floor) == 1){
                         fsm_buttonIsPushed(button,floor);
@@ -86,15 +86,14 @@ int main() {
         //sjekker om heisen står i en etasje - dette funker
         
         if(elev_get_floor_sensor_signal() != -1){
-            printf("Får signal og går til arrived at floor\n");
+            //printf("Får signal og går til arrived at floor\n");
             //printf("floor signal: %d\n",elev_get_floor_sensor_signal());
             fsm_arrivedAtFloor(elev_get_floor_sensor_signal());
         }
 
-        printf("heyhey1\n");
-        
-        printhelper();
-        printQueue();
+                
+        //printhelper();
+        //printQueue();
         
         if(timer_isTimeOut()== 1){
         	printf("nå har det gått 3 sekunder");
