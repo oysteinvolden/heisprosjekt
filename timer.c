@@ -32,7 +32,6 @@ int timer_isTimeOut(){
         time_t end;
         time (&end);
         float dif =  difftime(end, start);
-        //printf("Execution time = %f\n", dif);
 
         if(dif < 3.1 && dif > 2.9){
             return 1;

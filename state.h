@@ -30,4 +30,5 @@ void fsm_LastMeasuredFloor();
 void fsm_deleteAllOrders();
 int getstate();
 int fsm_betweenFloorChooseDirection();
+void fsm_checkButton();
 #endif /* state_h */

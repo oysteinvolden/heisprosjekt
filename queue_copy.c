@@ -11,7 +11,7 @@
 #include <assert.h>
 
 static int queue[4][3];
-static int Nfloor = 4;
+//static int Nfloor = 4;
 
 
 void queue_initialize(){
@@ -48,8 +48,7 @@ void queue_addToQueue(elev_button_type_t button, int floor){
 
 void queue_removeOrder(int floor, int direction){
     assert(floor >= 0 && floor <= 3);
-    int counter = 1;//what is this doing?
-    
+   
     //delete order in button inside (first priority)
     queue[floor][2]= 0;
     switch (direction) {
@@ -74,10 +73,14 @@ void queue_removeOrder(int floor, int direction){
     }
 }
 
+int queue_checkOrder(elev_button_type_t button,int floor){
+    return queue[floor][button];
+
+}
+
 
 //will just verify if the conditions is satisfied, not priority between orders
 int queue_floorInQueue(int floor, int direction){
-    //assert(floor >= 0 && floor <= 3));
     // check if queue should stop in lowest or highest floor
     
     if(floor == 0){
@@ -101,7 +104,6 @@ int queue_floorInQueue(int floor, int direction){
     
     //checking if direction
     if(direction == 1){
-            //printf("checking inside queue");
             if(queue[floor][0] == 1){
                 return 1;
             }
@@ -122,13 +124,11 @@ int queue_getNextOrder(int currentFloor, int direction){
         return -1;
     }
     else{
-        //printf("return true order %d\n", queue_selectNextOrder(currentFloor,direction) );
 
         //dersom det bare ligger en bestilling i køen og den er over eller under retningen vi kjører nå
         if(queue_selectNextOrder(currentFloor,direction) == -1){
             if(direction == -1){
                 int byttetall = 1;
-                //printf("return change %d", queue_selectNextOrder(currentFloor,byttetall) );
                 return queue_selectNextOrder(currentFloor,byttetall);
             }
             else if(direction == 1){
@@ -158,10 +158,8 @@ int queueEmpty(){
 
 int queueiteratorup(int currentFloor, int it){
     for(int i =3; i >= (currentFloor); i--){
-            //printf("denne skal være%d\n",queue[i][it] );
 
             if (queue[i][it] == 1){
-            	//printf("her skal vi retuirnere 3 %d\n ", i); 
                 return (i);
             }
         }
@@ -179,30 +177,15 @@ int queueiteratordown(int currentFloor, int it){
 
 
 
-int queue_selectNextOrder(int currentFloor,int direction){
-    //printf("queue_selectNextOrder");
+int queue_selectNextOrder(int currentFloor,int direction){    
     
-    /*
-    if (currentFloor == 3) {
-        direction = -1;
-    }
-    if(currentFloor == 0){
-        direction = 1;
-    }
-    */
-    
-    
-    //printf("%d heisdireksjon",direction);
     if (direction == 1){
-            //printf("case 2");
             // is there someone inside wanting up?
             if (queueiteratorup(currentFloor,2) != -1){
                 
                 return queueiteratorup(currentFloor,2);
             }
             
-            
-            // her må vi sjekke at dersom vil ned > vil opp så skal target floor settes til ned ellers skal opp gjelde. 
             //is there someone over us wanting down?
             
             if (queueiteratorup(currentFloor,1)>queueiteratorup(currentFloor,0)){
@@ -219,15 +202,10 @@ int queue_selectNextOrder(int currentFloor,int direction){
                 return queueiteratorup(currentFloor,1);
             }
            
-            
-           
-            //printf("not working");
-    }
-            //OBS OBS denne rekkefølgen må dobbeltsjekkes men tror den stemmer
-            
+    }            
             
     if(direction == -1){
-            //printf("case -1");
+            
             // is there someone inside wanting down?
 
        if (queueiteratordown(currentFloor,2) != -1){
@@ -237,16 +215,13 @@ int queue_selectNextOrder(int currentFloor,int direction){
             
             if ((queueiteratordown(currentFloor,1) != -1) && (queueiteratordown(currentFloor,0) != -1)){
             	if(queueiteratordown(currentFloor,1) > queueiteratordown(currentFloor,0)){
-                    //assert(0);
                     return queueiteratordown(currentFloor,0);
-
             }
         }
             
             //is there someone under us wanting down?
             
             if (queueiteratordown(currentFloor,1) != -1){
-                //assert(0);
                 return queueiteratordown(currentFloor,1);
             }
             //is there someone under us wanting up?
@@ -254,34 +229,7 @@ int queue_selectNextOrder(int currentFloor,int direction){
             if (queueiteratordown(currentFloor,0) != -1){
                 return queueiteratordown(currentFloor,0);
             }
-            // is there someone inside wanting down?
-            /*
-            for(int i =0; i < (currentFloor); i++){
-                if (queue[i][2] == 1){
-                    return (i);
-                }
-            }
             
-            //is there someone under us wanting up?
-            for(int i =0; i < (currentFloor); i++){
-                if (queue[i][0] == 1){
-                    return (i);
-                }
-            }
-            
-            */
-            //is there someone under us wanting down?
-            /*
-            for(int i =0; i == (currentFloor); i++){
-                printf("yo");
-                if (queue[i][1] == 1){
-        
-                    return (i);
-                }
-            }
-            */
-    //}
-    
 }
 return -1;
 }
@@ -304,12 +252,4 @@ void printQueue(){
 }
 
 
-/*
-void queue_setUpdatedFloor(int floor){
-    lastUpdatedFloor = floor;
-}
 
-int queue_getUpdatedFloor(){
-    return lastUpdatedFloor;
-}
-*/

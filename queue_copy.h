@@ -26,6 +26,7 @@ int queueiteratordown(int, int );
 void printQueue();
 void queue_setUpdatedFloor(int);
 int queue_getUpdatedFloor();
+int queue_checkOrder(elev_button_type_t button,int floor);
 
 
 
