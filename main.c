@@ -5,33 +5,12 @@
 
 
 int main() {
-    /*
-    // Initialize hardware
-    if (!elev_init()) {
-        printf("Unable to initialize elevator hardware!\n");
-        return 1;
-    }
-
-    printf("Press STOP button to stop elevator and exit program.\n");
-    
-    
-    elev_set_motor_direction(DIRN_UP);
-
-     */
+   
     
     //startup condition
     fsm_initialize();
 
     elev_button_type_t button;
-
-    //kommentarer:
-    //fsm_buttonIsPushed må kodes bedre. 
-    //fsm_chooseMotorDirection() tror jeg er ok i seg selv,
-    //men vil ikke fungere så lenge ButtonIsPushed ikke oppdaterer currentTarget riktig.
-    //må ha enkel oversikt over sist målte etasje - ok
-    //må ha en lette oversikt over knappene. Kanksje samle knappenetypene i en struct?
-    
-    
 
 
     while (1) {
@@ -48,7 +27,7 @@ int main() {
                 for (int floor = 0; floor < 3; floor ++){
                 
                 if(elev_get_button_signal(button, floor) == 1){
-                    //printf("hallo");
+                   
                     fsm_buttonIsPushed(button,floor);
                     elev_set_button_lamp(button,floor,1);
                 }
@@ -91,7 +70,9 @@ int main() {
             fsm_arrivedAtFloor(elev_get_floor_sensor_signal());
         }
 
-                
+        
+
+
         //printhelper();
         //printQueue();
         

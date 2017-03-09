@@ -91,8 +91,9 @@ void fsm_timeOut(){
             }
         default: break;
     }
-    
+   
 }
+
 
 
 int fsm_arrivedAtFloor(int signalFloor){
@@ -107,6 +108,8 @@ int fsm_arrivedAtFloor(int signalFloor){
     if (state == emergency_stop_running){
         state = running;
     }
+
+    
 
     switch (state){
     	case running:
@@ -229,7 +232,7 @@ int fsm_arrivedAtFloor(int signalFloor){
     		
     		
     }
-
+    lastDirectionFromFloor = direction;
     return 0;
 }
 
@@ -417,8 +420,8 @@ void fsm_stopButtonUnpressed(){
 
 
             elev_set_stop_lamp(0);
-            //state = running;
-            state = emergency_stop_running;
+            state = running;
+            //state = emergency_stop_running;
             break;
             
         default:
@@ -430,13 +433,25 @@ void fsm_stopButtonUnpressed(){
 //local function
 
 void fsm_chooseMotorDirection(){
-     printf("inne i motordirection %d\n",direction);
+     //printf("inne i motordirection %d\n",direction);
     if(targetFloor > currentFloor){
         direction = 1;
     }
     else if(targetFloor < currentFloor){
         direction = -1;
     }
+
+    if(targetFloor == currentFloor){
+    
+    //printf("last direction from floor %d\n", lastDirectionFromFloor);
+
+        if(lastDirectionFromFloor == 1){
+            direction = -1;
+    }
+        else {
+        direction = 1;
+        }   
+}
     //printf("direction middle %d\n",direction);
     /*
     if(targetFloor == currentFloor){
@@ -459,7 +474,7 @@ int fsm_betweenFloorChooseDirection(){
     if(targetFloor == currentFloor){
         
         
-        if(direction == 1){
+        if(lastDirectionFromFloor == 1){
             return  -1;
     }
         else {
@@ -536,14 +551,15 @@ void fsm_buttonIsPushed(elev_button_type_t button,int floor){
             //elev_set_motor_direction(direction);
             break;
             
-            
+            /*
         case emergency_stop_running:
             queue_addToQueue(button,floor);
             targetFloor = queue_getNextOrder(currentFloor,direction);
             elev_set_motor_direction(fsm_betweenFloorChooseDirection());
             
             break;
-            
+            */
+
         default:
             break;
     }
@@ -560,10 +576,11 @@ void switchDir(int direction){
 }
 
 void printhelper(){
-    printf("currentfloor %d\n",currentFloor );
-    printf("targetfloor %d\n",targetFloor );
-    printf("direction %d\n",direction);
-    printf(" state %d\n",state);
+    //printf("currentfloor %d\n",currentFloor );
+    //printf("targetfloor %d\n",targetFloor );
+    //printf("direction %d\n",direction);
+    //printf(" state %d\n",state);
+    printf("last direction from floor %d\n", lastDirectionFromFloor);
 }
 
 

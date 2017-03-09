@@ -55,11 +55,17 @@ void queue_removeOrder(int floor, int direction){
     switch (direction) {
         case 1:
             //if direction up, the order up in floor is deleted
+            if(queue[floor][0] == 1){
+                queue[floor][1]= 0;
+            }
             queue[floor][0]= 0;
             break;
             
         case -1:
             //if direction down, the order down in floor is deleted
+            if(queue[floor][1] == 1){
+                queue[floor][0]= 0;
+            }
             queue[floor][1]= 0;
             break;
             
